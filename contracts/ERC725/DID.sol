@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract MyContract {
+contract DID {
     struct DIDDocument {
         string id;
         string publicKey;

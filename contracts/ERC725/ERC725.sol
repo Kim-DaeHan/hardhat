@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 // ERC725 컨트랙트를 import
 import "@erc725/smart-contracts/contracts/ERC725.sol";
 
-contract MyContract is ERC725 {
+contract ERC_725 is ERC725 {
     constructor(address initialOwner) ERC725(initialOwner) {}
 
     // 데이터를 저장하는 함수
