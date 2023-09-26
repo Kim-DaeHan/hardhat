@@ -32,6 +32,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@erc725/smart-contracts": "^5.2.0",
     "@openzeppelin/contracts": "^4.9.3",
     "ethers": "^6.7.1"
   }

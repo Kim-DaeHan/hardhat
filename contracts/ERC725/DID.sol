@@ -1,63 +1,127 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract DID {
-    struct Key {
-        uint256 purpose;
-        uint256 keyType;
-        bytes32 key;
+contract MyContract {
+    struct DIDDocument {
+        string id;
+        string publicKey;
+        Authentication authentication;
+        Services services;
     }
 
-    struct Service {
-        string serviceEndpoint;
-        string serviceType;
+    struct Authentication {
+        string signature;
+        string dateOfBirth;
+        string passportNumber;
     }
 
-    struct AuthenticationMethod {
-        string authenticationType;
-        bytes32 key;
+    struct Services {
+        string website;
+        string email;
+        string phone;
     }
 
-    mapping(bytes32 => Key) public keys;
-    mapping(uint256 => Service) public services;
-    mapping(uint256 => AuthenticationMethod) public authMethods;
+    mapping(bytes32 => DIDDocument) private didDocuments;
 
-    // DID 문서의 필드들
-    string public did; // DID 식별자
-    string public publicKey; // 공개 키
-    uint256 public created; // 생성일자
-    uint256 public updated; // 업데이트 일자
-
-    constructor(string memory _did) {
-        did = _did;
-    }
-
-    function addKey(bytes32 _key, uint256 _purpose, uint256 _keyType) public {
-        keys[_key] = Key(_purpose, _keyType, _key);
-    }
-
-    function addService(
-        uint256 _index,
-        string memory _serviceEndpoint,
-        string memory _type
+    // DID 문서 데이터를 저장하는 함수
+    function setDIDDocument(
+        string memory id,
+        string memory publicKey,
+        string memory signature,
+        string memory dateOfBirth,
+        string memory passportNumber,
+        string memory website,
+        string memory email,
+        string memory phone
     ) public {
-        services[_index] = Service(_serviceEndpoint, _type);
+        bytes32 key = keccak256(abi.encodePacked(id));
+
+        // 이미 해당 DID에 대한 문서가 존재하는지 확인
+        if (bytes(didDocuments[key].id).length == 0) {
+            DIDDocument memory didDocument;
+            didDocument.id = id;
+            didDocument.publicKey = publicKey;
+            didDocument.authentication.signature = signature;
+            didDocument.authentication.dateOfBirth = dateOfBirth;
+            didDocument.authentication.passportNumber = passportNumber;
+            didDocument.services.website = website;
+            didDocument.services.email = email;
+            didDocument.services.phone = phone;
+
+            didDocuments[key] = didDocument;
+        } else {
+            // 이미 해당 DID에 대한 문서가 존재하므로 덮어쓰기를 방지하려면 여기에 대한 처리를 추가하세요.
+            // 예를 들어, 예외를 발생시켜서 덮어쓰기를 막을 수 있습니다.
+            revert("DID already exists.");
+        }
     }
 
-    function addAuthMethod(
-        uint256 _index,
-        string memory _authenticationType,
-        bytes32 _key
+    // DID 문서 데이터를 조회하는 함수
+    function getDIDDocument(
+        string memory id
+    ) public view returns (DIDDocument memory) {
+        bytes32 key = keccak256(abi.encodePacked(id));
+        return didDocuments[key];
+    }
+
+    // DID 문서 데이터를 조회하는 함수 - id 필드
+    function getDIDDocumentId(
+        string memory id
+    ) public view returns (string memory) {
+        bytes32 key = keccak256(abi.encodePacked(id));
+        return didDocuments[key].id;
+    }
+
+    // DID 문서 데이터를 조회하는 함수 - publicKey 필드
+    function getDIDDocumentPublicKey(
+        string memory id
+    ) public view returns (string memory) {
+        bytes32 key = keccak256(abi.encodePacked(id));
+        return didDocuments[key].publicKey;
+    }
+
+    // DID 문서 데이터를 조회하는 함수 - authentication 필드
+    function getDIDDocumentAuthentication(
+        string memory id
+    ) public view returns (Authentication memory) {
+        bytes32 key = keccak256(abi.encodePacked(id));
+        return didDocuments[key].authentication;
+    }
+
+    // DID 문서 데이터를 조회하는 함수 - services 필드
+    function getDIDDocumentServices(
+        string memory id
+    ) public view returns (Services memory) {
+        bytes32 key = keccak256(abi.encodePacked(id));
+        return didDocuments[key].services;
+    }
+
+    // DIDDocument 구조체의 모든 필드를 수정하는 함수
+    function updateDIDDocument(
+        string memory id,
+        string memory newPublicKey,
+        string memory newSignature,
+        string memory newDateOfBirth,
+        string memory newPassportNumber,
+        string memory newWebsite,
+        string memory newEmail,
+        string memory newPhone
     ) public {
-        authMethods[_index] = AuthenticationMethod(_authenticationType, _key);
-    }
+        bytes32 key = keccak256(abi.encodePacked(id));
+        DIDDocument storage document = didDocuments[key];
 
-    function updatePublicKey(string memory _publicKey) public {
-        publicKey = _publicKey;
-    }
+        // 존재하지 않는 키에 대한 처리
+        if (bytes(document.id).length == 0) {
+            revert("DID does not exist.");
+        }
 
-    function updateTimestamps(uint256 _created, uint256 _updated) public {
-        created = _created;
-        updated = _updated;
+        document.id = id;
+        document.publicKey = newPublicKey;
+        document.authentication.signature = newSignature;
+        document.authentication.dateOfBirth = newDateOfBirth;
+        document.authentication.passportNumber = newPassportNumber;
+        document.services.website = newWebsite;
+        document.services.email = newEmail;
+        document.services.phone = newPhone;
     }
 }
