@@ -212,4 +212,23 @@ contract P2PTrade {
     require(token.transfer(to, amount), "Token withdrawal failed");
     emit TokensWithdrawn(tokenAddress, to, amount);
   }
+
+  // function withdrawTokens(
+  //   bytes32 tradeId,
+  //   uint256 amount,
+  //   address to
+  // ) external onlyOwner {
+  //   Trade storage trade = trades[tradeId];
+
+  //   require(trade.baseTokenAmount >= amount, "amount error");
+
+  //   IERC20 token = IERC20(trade.baseToken);
+  //   // 요청된 양의 토큰을 인출
+  //   require(token.transfer(to, amount), "Token withdrawal failed");
+
+  //   // Trade 비활성화
+  //   trade.isActive = false;
+  //   trade.baseTokenAmount = trade.baseTokenAmount - amount;
+  //   emit TokensWithdrawn(trade.baseToken, to, amount);
+  // }
 }
