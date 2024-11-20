@@ -201,7 +201,7 @@ contract P2PTrade {
     feePercent = _feePercent;
   }
 
-  // 토큰 인출 함수.
+  // 토큰 인출 함수
   function withdrawTokens(
     address tokenAddress,
     uint256 amount,
