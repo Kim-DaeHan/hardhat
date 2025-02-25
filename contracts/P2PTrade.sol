@@ -209,7 +209,7 @@ contract P2PTrade {
   ) external onlyOwner {
     IERC20 token = IERC20(tokenAddress);
     // 요청된 양의 토큰을 인출
-    require(token.transfer(to, amount), "Token withdrawal failed.");
+    require(token.transfer(to, amount), "Token withdrawal failed");
     emit TokensWithdrawn(tokenAddress, to, amount);
   }
 }
